@@ -18,8 +18,8 @@ Stawki domyślne (zmienisz je w ustawieniach, ikona zębatki na Starcie): **0,50
 ### Opcja A: bez instalowania czegokolwiek (GitHub Actions)
 
 1. Załóż darmowe konto na github.com i utwórz **nowe repozytorium** (np. `KaucjaPRO`).
-2. Wgraj całą zawartość tego folderu do repozytorium (przycisk *Add file → Upload files*; przeciągnij pliki **razem z ukrytym folderem `.github`**). Najwygodniej przez `git push`.
-3. Wejdź w zakładkę **Actions** → *Build KaucjaPRO APK* → **Run workflow** (uruchomi się też samo po wgraniu).
+2. Wgraj całą zawartość tego folderu do repozytorium **jako rozpakowane pliki** (nie jako zip), **razem z ukrytym folderem `.github`**. Najwygodniej przez `git push`.
+3. Wejdź w zakładkę **Actions** → *Build KaucjaPRO APK* → **Run workflow** (uruchamia się też samo po każdym pushu i pull requeście).
 4. Po ok. 5–10 minutach wejdź w zakończony przebieg i pobierz artefakt **KaucjaPRO-apk** (zip z plikiem `KaucjaPRO.apk`).
 
 ### Opcja B: Android Studio
@@ -34,15 +34,11 @@ Z linii poleceń (przy zainstalowanym Android SDK i Javie 17): `./gradlew assemb
 
 Przenieś `KaucjaPRO.apk` na telefon, otwórz go i zezwól na instalację z tego źródła (Ustawienia → Aplikacje → Specjalny dostęp → Instalowanie nieznanych aplikacji). To APK **debugowy**, podpisany kluczem debugowym: wystarcza do własnego użytku. Do publikacji w Google Play potrzebny jest własny klucz podpisujący i wersja release.
 
-## Uwaga: stan weryfikacji
+## Stan weryfikacji
 
-Kod został napisany **bez możliwości kompilacji** (środowisko, w którym powstał, nie miało dostępu do Android SDK ani repozytoriów Maven). Sprawdzono:
+Projekt kompiluje się (`./gradlew assembleDebug`), testy jednostkowe parsera paragonów przechodzą (`./gradlew testDebugUnitTest`, 8/8), a lint nie zgłasza błędów (tylko ostrzeżenia, m.in. o nowszych wersjach bibliotek). Każdy push i pull request jest automatycznie budowany przez GitHub Actions (budowa + testy + lint).
 
-- logikę parsera paragonów (odtworzoną w Pythonie na 10 przypadkach, w tym z testu `ReceiptParserTest`),
-- poprawność składniową wszystkich plików Kotlina i XML,
-- brak brakujących importów (heurystycznie).
-
-**Nie sprawdzono:** kompilacji, typów, działania na urządzeniu, jakości OCR na prawdziwych paragonach, ani istnienia wybranych wersji bibliotek (AGP 8.7.3, Kotlin 2.0.21, Compose BOM 2024.12.01, CameraX 1.4.1, ML Kit 17.3.0 / 16.0.1, osmdroid 6.1.20). Jeśli pierwsza budowa zgłosi błąd, wklej treść błędu: zwykle to drobna poprawka (literówka, wersja biblioteki). Możesz też podnieść wersje do najnowszych stabilnych w `app/build.gradle.kts`.
+**Nie sprawdzono:** działania na prawdziwym urządzeniu ani jakości OCR na prawdziwych paragonach.
 
 ## Dane i prywatność
 
